@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 
-export default function ManageItems() {
+export default function ManageItems({Category, onChangeCategory}) {
     const [items, setItems] = useState([]);
     const [newItem, setNewItem] = useState("");
     const [newQuantity, setNewQuantity] = useState(1);
-    const [newCategory, setNewCategory] = useState("");
+    
     
     const deleteItem = (id) => {
         setItems(items.filter((item) => item.id !== id));
@@ -38,10 +38,10 @@ export default function ManageItems() {
     };
 
     const addItem = (e) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault();
 
         // Validate inputs
-        if (!newItem.trim() || !newCategory.trim() || newQuantity <= 0) {
+        if (!newItem.trim() || !Category.trim() || newQuantity <= 0) {
             alert("Please provide valid inputs.");
             return;
         }
@@ -52,14 +52,13 @@ export default function ManageItems() {
                 id: items.length + 1,
                 name: newItem.trim(),
                 quantity: parseInt(newQuantity, 10),
-                category: newCategory.trim(),
+                category: Category.trim(),
             },
         ]);
 
         // Clear input fields after adding
         setNewItem("");
         setNewQuantity(1);
-        setNewCategory("");
     };
 
     return (
@@ -81,14 +80,17 @@ export default function ManageItems() {
                     value={newQuantity}
                     onChange={(e) => setNewQuantity(e.target.value)}
                 />
-                <input
-                    className="p-2 m-2 border-2 border-black text-black"
-                    required
-                    type="text"
-                    placeholder="Category"
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                />
+                <div>
+                    <select 
+                        className="p-2 m-2 border-2 border-black text-black"
+                        value={Category} 
+                        onChange={(e) => onChangeCategory(e.target.value)}
+                    >
+                        <option value="Food">Food</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
                 <button
                     type="submit"
                     className="bg-white text-black rounded-full p-1 m-2 text-black border-2 border-black"
