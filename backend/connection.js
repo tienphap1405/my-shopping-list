@@ -1,19 +1,28 @@
-const {MongoClient} = require("mongodb")
-const uri = "mongodb+srv://sjfdik:sjfdik@cluster0.yqwte.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+import { MongoClient, ServerApiVersion } from "mongodb";
 
-const client = new MongoClient(uri);
+const uri = process.env.ATLAS_URI || "";
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
 let db;
-async function run() {
-    try {
-        await client.connect();
-        console.log("Pinged, successfully connected to mongoDB!");
-        let db = client.db("ShoppingList");
-    } catch(err){
-        console.error(err);
-        throw err;
-    }
+
+try {
+  // Connect the client to the server
+  await client.connect();
+  // Send a ping to confirm a successful connection
+  await client.db("admin").command({ ping: 1 });
+  console.log(
+    "Pinged your deployment. You successfully connected to MongoDB!"
+  );
+  // Set the database instance
+  db = client.db("ShoppingList");
+} catch (err) {
+  console.error("Error connecting to MongoDB:", err);
 }
 
-
-
-module.exports = run;
+export default db;
